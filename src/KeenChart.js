@@ -3,8 +3,6 @@ import React, {PureComponent} from 'react';
 import Dataviz from 'keen-dataviz';
 import {runQueries, renderResults} from './AnalyticsActions';
 
-//require('./graph.less');
-
 class KeenChart extends PureComponent {
   constructor() {
     super();
@@ -15,9 +13,13 @@ class KeenChart extends PureComponent {
     this.getChart = this.getChart.bind(this);
     this.renderGraph = this.renderGraph.bind(this);
   }
-
+  componentDidMount() {
+    if (this.props.client) {
+      this.renderGraph();
+    }
+  }
   componentWillReceiveProps(newProps) {
-    if (!this.props.client && newProps.client) {
+    if (!this.props.client && newProps.client && !this.state.chart) {
       this.renderGraph();
     }
     if (
@@ -96,7 +98,7 @@ class KeenChart extends PureComponent {
       legend: 'bottom'
     };
     return new Dataviz()
-      .el(self.refs.theChart)
+      .el(self.refs.theKeenChart)
       .height(400)
       .title(self.props.title)
       .type(self.props.chartType)
@@ -127,7 +129,7 @@ class KeenChart extends PureComponent {
   }
 
   render() {
-    return <div className="chart" ref="theChart" />;
+    return <div className="keen-react-chart" ref="theKeenChart" />;
   }
 }
 

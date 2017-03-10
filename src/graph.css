@@ -1,0 +1,18 @@
+.keen-react-chart {
+  color: black;
+  width: 500px;
+  height: 400px;
+  overflow: hidden;
+  float: left;
+  margin-right: 10px;
+}
+.keen-react-chart svg {
+  background: #fff;
+}
+.keen-react-chart svg .c3-line {
+  stroke-width: 3px;
+}
+.keen-react-chart .c3-tooltip td {
+  font-size: 12px;
+  padding: 4px;
+}
