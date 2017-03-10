@@ -16,11 +16,10 @@ class KeenChart extends PureComponent {
     this.renderGraph = this.renderGraph.bind(this);
   }
 
-  componentDidMount() {
-    this.renderGraph();
-  }
-
   componentWillReceiveProps(newProps) {
+    if (!this.props.client && newProps.client) {
+      this.renderGraph();
+    }
     if (
       newProps.results[this.props.title] &&
       this.props.results[this.props.title] !==
@@ -142,7 +141,7 @@ KeenChart.propTypes = {
   resultsModifier: React.PropTypes.func,
   chartType: React.PropTypes.string.isRequired,
   queryType: React.PropTypes.string.isRequired,
-  client: React.PropTypes.object.isRequired,
+  client: React.PropTypes.object,
   chartOptions: React.PropTypes.object,
   start: React.PropTypes.string.isRequired,
   end: React.PropTypes.string.isRequired,
