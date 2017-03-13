@@ -26,7 +26,7 @@ export function setKeenStart(dateTime) {
     receivedAt: moment().format()
   };
 }
-export function setKeenEnd(projectId, readKey) {
+export function setKeenEnd(dateTime) {
   return {
     type: SET_END,
     end: moment(dateTime),

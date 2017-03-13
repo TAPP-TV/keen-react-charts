@@ -44,7 +44,7 @@ function setKeenStart(dateTime) {
     receivedAt: (0, _moment2.default)().format()
   };
 }
-function setKeenEnd(projectId, readKey) {
+function setKeenEnd(dateTime) {
   return {
     type: SET_END,
     end: (0, _moment2.default)(dateTime),
