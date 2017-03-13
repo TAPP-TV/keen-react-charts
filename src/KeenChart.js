@@ -65,10 +65,54 @@ class KeenChart extends PureComponent {
       )
     );
   }
+  //set values for timeseries display
+  getTimeSeriesOptions(isSparkline = false) {
+    var format = '%b-%d-%y';
+    var interval = this.interval != null ? this.interval : this.page.interval;
+    if (interval == 'hourly' || interval == 'every_15_minutes') {
+      format = '%m/%d %H:%M';
+    } else if (interval == 'monthly') {
+      format = '%b %Y';
+    }
+    //make it unlabeled
+    if (isSparkline) {
+      return {
+        axis: {
+          y: {
+            show: false
+          },
+          x: {
+            show: false
+          }
+        },
+        legend: {
+          show: false
+        }
+      };
+    }
+    return {
+      axis: {
+        x: {
+          tick: {
+            culling: {
+              max: 8 // the number of tick texts will be adjusted to less than this value
+            },
+            type: 'timeseries',
+            format: function(d) {
+              if (interval == 'monthly') {
+                d = moment(d).add('days', 1).format();
+              }
+              return d3.time.format(format)(new Date(d));
+            }
+          }
+        }
+      }
+    };
+  }
 
   getChart() {
     const self = this;
-    const options = {
+    let options = {
       'border-radius': '5px',
       minimumSlicePercentage: 5,
       donut: {
@@ -97,6 +141,9 @@ class KeenChart extends PureComponent {
       },
       legend: 'bottom'
     };
+    if (self.interval) {
+      options = Object.assign(options, this.getTimeSeriesOptions());
+    }
     return new Dataviz()
       .el(self.refs.theKeenChart)
       .height(400)

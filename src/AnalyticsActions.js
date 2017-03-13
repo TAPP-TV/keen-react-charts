@@ -22,14 +22,14 @@ export function setKeenConfig(projectId, readKey) {
 export function setKeenStart(dateTime) {
   return {
     type: SET_START,
-    start: moment(dateTime),
+    start: moment(dateTime).format(),
     receivedAt: moment().format()
   };
 }
 export function setKeenEnd(dateTime) {
   return {
     type: SET_END,
-    end: moment(dateTime),
+    end: moment(dateTime).format(),
     receivedAt: moment().format()
   };
 }

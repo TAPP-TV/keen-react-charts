@@ -83,6 +83,55 @@ var KeenChart = (function (_PureComponent) {
       var queries = this.getQueries();
       this.props.dispatch((0, _AnalyticsActions.runQueries)(this.props.client, this.props.title, this.props.queryType, queries, this.props.resultsModifier));
     }
+    //set values for timeseries display
+
+  }, {
+    key: 'getTimeSeriesOptions',
+    value: function getTimeSeriesOptions() {
+      var isSparkline = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var _format = '%b-%d-%y';
+      var interval = this.interval != null ? this.interval : this.page.interval;
+      if (interval == 'hourly' || interval == 'every_15_minutes') {
+        _format = '%m/%d %H:%M';
+      } else if (interval == 'monthly') {
+        _format = '%b %Y';
+      }
+      //make it unlabeled
+      if (isSparkline) {
+        return {
+          axis: {
+            y: {
+              show: false
+            },
+            x: {
+              show: false
+            }
+          },
+          legend: {
+            show: false
+          }
+        };
+      }
+      return {
+        axis: {
+          x: {
+            tick: {
+              culling: {
+                max: 8 // the number of tick texts will be adjusted to less than this value
+              },
+              type: 'timeseries',
+              format: function format(d) {
+                if (interval == 'monthly') {
+                  d = moment(d).add('days', 1).format();
+                }
+                return d3.time.format(_format)(new Date(d));
+              }
+            }
+          }
+        }
+      };
+    }
   }, {
     key: 'getChart',
     value: function getChart() {
@@ -116,6 +165,9 @@ var KeenChart = (function (_PureComponent) {
         },
         legend: 'bottom'
       };
+      if (self.interval) {
+        options = Object.assign(options, this.getTimeSeriesOptions());
+      }
       return new _keenDataviz2.default().el(self.refs.theKeenChart).height(400).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
     }
   }, {

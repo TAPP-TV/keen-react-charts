@@ -40,14 +40,14 @@ function setKeenConfig(projectId, readKey) {
 function setKeenStart(dateTime) {
   return {
     type: SET_START,
-    start: (0, _moment2.default)(dateTime),
+    start: (0, _moment2.default)(dateTime).format(),
     receivedAt: (0, _moment2.default)().format()
   };
 }
 function setKeenEnd(dateTime) {
   return {
     type: SET_END,
-    end: (0, _moment2.default)(dateTime),
+    end: (0, _moment2.default)(dateTime).format(),
     receivedAt: (0, _moment2.default)().format()
   };
 }
