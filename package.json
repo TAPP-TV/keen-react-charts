@@ -1,6 +1,6 @@
 {
   "name": "keen-react-charts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist",
   "author": "mgreer <michael@tapptv.com>",
   "scripts": {
