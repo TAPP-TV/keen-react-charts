@@ -165,10 +165,11 @@ var KeenChart = (function (_PureComponent) {
         },
         legend: 'bottom'
       };
+      var height = this.props.chartOptions && this.props.chartOptions.height ? this.props.chartOptions.height : 400;
       if (self.interval) {
         options = Object.assign(options, this.getTimeSeriesOptions());
       }
-      return new _keenDataviz2.default().el(self.refs.theKeenChart).height(400).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
+      return new _keenDataviz2.default().el(self.refs.theKeenChart).height(height).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
     }
   }, {
     key: 'getQueries',

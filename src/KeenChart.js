@@ -141,12 +141,15 @@ class KeenChart extends PureComponent {
       },
       legend: 'bottom'
     };
+    const height = this.props.chartOptions && this.props.chartOptions.height
+      ? this.props.chartOptions.height
+      : 400;
     if (self.interval) {
       options = Object.assign(options, this.getTimeSeriesOptions());
     }
     return new Dataviz()
       .el(self.refs.theKeenChart)
-      .height(400)
+      .height(height)
       .title(self.props.title)
       .type(self.props.chartType)
       .chartOptions(Object.assign(options, this.props.chartOptions));
