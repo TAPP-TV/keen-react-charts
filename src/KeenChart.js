@@ -38,6 +38,12 @@ class KeenChart extends PureComponent {
     } else if (this.props.variables !== newProps.variables) {
       this.reRenderGraph();
       //console.log(this.props.variables, newProps.variables);
+    } else if (
+      this.props.start !== newProps.start ||
+      this.props.end !== newProps.end ||
+      this.props.interval !== newProps.interval
+    ) {
+      this.reRenderGraph();
     }
   }
 
