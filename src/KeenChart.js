@@ -43,7 +43,7 @@ class KeenChart extends PureComponent {
       this.props.end !== newProps.end ||
       this.props.interval !== newProps.interval
     ) {
-      this.reRenderGraph();
+      this.renderGraph();
     }
   }
 
