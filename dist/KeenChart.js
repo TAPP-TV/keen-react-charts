@@ -16,6 +16,10 @@ var _keenDataviz = require('keen-dataviz');
 
 var _keenDataviz2 = _interopRequireDefault(_keenDataviz);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _AnalyticsActions = require('./AnalyticsActions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -105,7 +109,6 @@ var KeenChart = (function (_PureComponent) {
       } else if (interval == 'monthly') {
         _format = '%b %Y';
       }
-      console.log('format', _format);
       //make it unlabeled
       if (isSparkline) {
         return {
@@ -132,7 +135,7 @@ var KeenChart = (function (_PureComponent) {
               type: 'timeseries',
               format: function format(d) {
                 if (interval == 'monthly') {
-                  d = moment(d).add('days', 1).format();
+                  d = (0, _moment2.default)(d).add('days', 1).format();
                 }
                 return d3.time.format(_format)(new Date(d));
               }
@@ -175,7 +178,6 @@ var KeenChart = (function (_PureComponent) {
         legend: 'bottom'
       };
       var height = this.props.chartOptions && this.props.chartOptions.height ? this.props.chartOptions.height : 400;
-      console.log('interval', this.props.interval);
       if (this.props.interval) {
         options = Object.assign(options, this.getTimeSeriesOptions());
       }

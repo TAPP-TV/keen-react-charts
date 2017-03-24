@@ -1,6 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import Dataviz from 'keen-dataviz';
+import moment from 'moment';
 import {runQueries, renderResults} from './AnalyticsActions';
 
 class KeenChart extends PureComponent {
