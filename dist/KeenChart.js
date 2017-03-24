@@ -39,6 +39,7 @@ var KeenChart = (function (_PureComponent) {
     };
     _this.getQueries = _this.getQueries.bind(_this);
     _this.getChart = _this.getChart.bind(_this);
+    _this.getTimeSeriesOptions = _this.getTimeSeriesOptions.bind(_this);
     _this.renderGraph = _this.renderGraph.bind(_this);
     return _this;
   }
@@ -70,7 +71,6 @@ var KeenChart = (function (_PureComponent) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(oldProps) {
       if (this.props.start !== oldProps.start || this.props.end !== oldProps.end || this.props.interval !== oldProps.interval) {
-        console.log('redo graph with ', this.props.interval);
         this.renderGraph();
       }
     }
@@ -99,12 +99,13 @@ var KeenChart = (function (_PureComponent) {
       var isSparkline = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var _format = '%b-%d-%y';
-      var interval = this.interval != null ? this.interval : this.page.interval;
+      var interval = this.props.interval;
       if (interval == 'hourly' || interval == 'every_15_minutes') {
         _format = '%m/%d %H:%M';
       } else if (interval == 'monthly') {
         _format = '%b %Y';
       }
+      console.log('format', _format);
       //make it unlabeled
       if (isSparkline) {
         return {
@@ -174,7 +175,8 @@ var KeenChart = (function (_PureComponent) {
         legend: 'bottom'
       };
       var height = this.props.chartOptions && this.props.chartOptions.height ? this.props.chartOptions.height : 400;
-      if (self.interval) {
+      console.log('interval', this.props.interval);
+      if (this.props.interval) {
         options = Object.assign(options, this.getTimeSeriesOptions());
       }
       return new _keenDataviz2.default().el(self.refs.theKeenChart).height(height).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
@@ -188,6 +190,7 @@ var KeenChart = (function (_PureComponent) {
           start: this.props.start,
           end: this.props.end
         },
+        refresh_rate: 3600,
         interval: this.props.interval
       };
       var queries = this.props.query instanceof Array ? this.props.query : [this.props.query];

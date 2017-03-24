@@ -11,6 +11,7 @@ class KeenChart extends PureComponent {
     };
     this.getQueries = this.getQueries.bind(this);
     this.getChart = this.getChart.bind(this);
+    this.getTimeSeriesOptions = this.getTimeSeriesOptions.bind(this);
     this.renderGraph = this.renderGraph.bind(this);
   }
   componentDidMount() {
@@ -46,7 +47,6 @@ class KeenChart extends PureComponent {
       this.props.end !== oldProps.end ||
       this.props.interval !== oldProps.interval
     ) {
-      console.log('redo graph with ', this.props.interval);
       this.renderGraph();
     }
   }
@@ -78,7 +78,7 @@ class KeenChart extends PureComponent {
   //set values for timeseries display
   getTimeSeriesOptions(isSparkline = false) {
     var format = '%b-%d-%y';
-    var interval = this.interval != null ? this.interval : this.page.interval;
+    var interval = this.props.interval;
     if (interval == 'hourly' || interval == 'every_15_minutes') {
       format = '%m/%d %H:%M';
     } else if (interval == 'monthly') {
@@ -154,7 +154,7 @@ class KeenChart extends PureComponent {
     const height = this.props.chartOptions && this.props.chartOptions.height
       ? this.props.chartOptions.height
       : 400;
-    if (self.interval) {
+    if (this.props.interval) {
       options = Object.assign(options, this.getTimeSeriesOptions());
     }
     return new Dataviz()
@@ -172,6 +172,7 @@ class KeenChart extends PureComponent {
         start: this.props.start,
         end: this.props.end
       },
+      refresh_rate: 3600,
       interval: this.props.interval
     };
     const queries = this.props.query instanceof Array
