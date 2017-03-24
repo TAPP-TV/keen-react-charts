@@ -3,10 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.STORE_ORIGINAL_RESULTS = exports.STASH_RESULT = exports.RUNNING_QUERY = exports.RECEIVE_RESULTS = exports.SET_INTERVAL = exports.SET_DAYS_AGO = exports.SET_END = exports.SET_START = exports.SET_KEEN_CONFIG = undefined;
+exports.STORE_ORIGINAL_RESULTS = exports.STASH_RESULT = exports.RUNNING_QUERY = exports.RECEIVE_RESULTS = exports.SET_INTERVAL = exports.SET_DAYS_AGO = exports.SET_START_AND_END = exports.SET_END = exports.SET_START = exports.SET_KEEN_CONFIG = undefined;
 exports.setKeenConfig = setKeenConfig;
 exports.setKeenStart = setKeenStart;
 exports.setKeenEnd = setKeenEnd;
+exports.setKeenStartAndEnd = setKeenStartAndEnd;
 exports.setInterval = setInterval;
 exports.stashResult = stashResult;
 exports.runQueries = runQueries;
@@ -21,6 +22,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var SET_KEEN_CONFIG = exports.SET_KEEN_CONFIG = 'SET_KEEN_CONFIG';
 var SET_START = exports.SET_START = 'SET_START';
 var SET_END = exports.SET_END = 'SET_END';
+var SET_START_AND_END = exports.SET_START_AND_END = 'SET_START_AND_END';
 var SET_DAYS_AGO = exports.SET_DAYS_AGO = 'SET_DAYS_AGO';
 var SET_INTERVAL = exports.SET_INTERVAL = 'SET_INTERVAL';
 var RECEIVE_RESULTS = exports.RECEIVE_RESULTS = 'RECEIVE_RESULTS';
@@ -48,6 +50,14 @@ function setKeenEnd(dateTime) {
   return {
     type: SET_END,
     end: (0, _moment2.default)(dateTime).format(),
+    receivedAt: (0, _moment2.default)().format()
+  };
+}
+function setKeenStartAndEnd(startDateTime, endDateTime) {
+  return {
+    type: SET_START_AND_END,
+    start: (0, _moment2.default)(startDateTime).format(),
+    end: (0, _moment2.default)(endDateTime).format(),
     receivedAt: (0, _moment2.default)().format()
   };
 }

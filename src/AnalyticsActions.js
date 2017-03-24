@@ -3,6 +3,7 @@ import moment from 'moment';
 export const SET_KEEN_CONFIG = 'SET_KEEN_CONFIG';
 export const SET_START = 'SET_START';
 export const SET_END = 'SET_END';
+export const SET_START_AND_END = 'SET_START_AND_END';
 export const SET_DAYS_AGO = 'SET_DAYS_AGO';
 export const SET_INTERVAL = 'SET_INTERVAL';
 export const RECEIVE_RESULTS = 'RECEIVE_RESULTS';
@@ -30,6 +31,14 @@ export function setKeenEnd(dateTime) {
   return {
     type: SET_END,
     end: moment(dateTime).format(),
+    receivedAt: moment().format()
+  };
+}
+export function setKeenStartAndEnd(startDateTime, endDateTime) {
+  return {
+    type: SET_START_AND_END,
+    start: moment(startDateTime).format(),
+    end: moment(endDateTime).format(),
     receivedAt: moment().format()
   };
 }

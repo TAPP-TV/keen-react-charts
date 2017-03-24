@@ -60,6 +60,13 @@ function analyticsReducer() {
         end: action.end,
         lastUpdated: action.receivedAt
       });
+    case _AnalyticsActions.SET_START_AND_END:
+      return _extends({}, state, {
+        daysAgo: (0, _moment2.default)(action.end).diff((0, _moment2.default)(action.start), 'days'),
+        start: action.start,
+        end: action.end,
+        lastUpdated: action.receivedAt
+      });
     case _AnalyticsActions.SET_KEEN_CONFIG:
       return _extends({}, state, {
         client: new _keenAnalysis2.default({

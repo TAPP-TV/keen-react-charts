@@ -7,5 +7,6 @@ exports.stashResult = require('./AnalyticsActions').stashResult;
 exports.runQueries = require('./AnalyticsActions').runQueries;
 exports.setKeenStart = require('./AnalyticsActions').setKeenStart;
 exports.setKeenEnd = require('./AnalyticsActions').setKeenEnd;
+exports.setKeenStartAndEnd = require('./AnalyticsActions').setKeenStartAndEnd;
 exports.setInterval = require('./AnalyticsActions').setInterval;
 exports.renderResults = require('./AnalyticsActions').renderResults;

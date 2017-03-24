@@ -46,6 +46,7 @@ class KeenChart extends PureComponent {
       this.props.end !== oldProps.end ||
       this.props.interval !== oldProps.interval
     ) {
+      console.log('redo graph with ', this.props.interval);
       this.renderGraph();
     }
   }

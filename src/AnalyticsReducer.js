@@ -5,6 +5,7 @@ import {
   RECEIVE_RESULTS,
   SET_START,
   SET_END,
+  SET_START_AND_END,
   SET_DAYS_AGO,
   SET_INTERVAL,
   SET_KEEN_CONFIG
@@ -55,6 +56,14 @@ function analyticsReducer(state = initialState, action) {
       return {
         ...state,
         daysAgo: moment(state.end).diff(moment(state.start), 'days'),
+        end: action.end,
+        lastUpdated: action.receivedAt
+      };
+    case SET_START_AND_END:
+      return {
+        ...state,
+        daysAgo: moment(action.end).diff(moment(action.start), 'days'),
+        start: action.start,
         end: action.end,
         lastUpdated: action.receivedAt
       };

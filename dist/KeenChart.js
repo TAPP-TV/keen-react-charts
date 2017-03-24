@@ -70,6 +70,7 @@ var KeenChart = (function (_PureComponent) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(oldProps) {
       if (this.props.start !== oldProps.start || this.props.end !== oldProps.end || this.props.interval !== oldProps.interval) {
+        console.log('redo graph with ', this.props.interval);
         this.renderGraph();
       }
     }
