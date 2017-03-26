@@ -16,9 +16,17 @@ class KeenChart extends PureComponent {
     this.renderGraph = this.renderGraph.bind(this);
   }
   componentDidMount() {
-    if (this.props.client) {
-      this.renderGraph();
-    }
+    this.setState(
+      {
+        chart: this.getChart()
+      },
+      () => {
+        this.state.chart.prepare();
+        if (this.props.client) {
+          this.renderGraph();
+        }
+      }
+    );
   }
   componentWillReceiveProps(newProps) {
     if (!this.props.client && newProps.client && !this.state.chart) {
@@ -60,11 +68,6 @@ class KeenChart extends PureComponent {
   }
 
   renderGraph() {
-    const chart = this.getChart();
-    chart.prepare();
-    this.setState({
-      chart: chart
-    });
     const queries = this.getQueries();
     this.props.dispatch(
       runQueries(
@@ -160,6 +163,7 @@ class KeenChart extends PureComponent {
     }
     return new Dataviz()
       .el(self.refs.theKeenChart)
+      .colors(this.props.colors)
       .height(height)
       .title(self.props.title)
       .type(self.props.chartType)

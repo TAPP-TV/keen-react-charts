@@ -51,9 +51,16 @@ var KeenChart = (function (_PureComponent) {
   _createClass(KeenChart, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      if (this.props.client) {
-        this.renderGraph();
-      }
+      var _this2 = this;
+
+      this.setState({
+        chart: this.getChart()
+      }, function () {
+        _this2.state.chart.prepare();
+        if (_this2.props.client) {
+          _this2.renderGraph();
+        }
+      });
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -87,11 +94,6 @@ var KeenChart = (function (_PureComponent) {
   }, {
     key: 'renderGraph',
     value: function renderGraph() {
-      var chart = this.getChart();
-      chart.prepare();
-      this.setState({
-        chart: chart
-      });
       var queries = this.getQueries();
       this.props.dispatch((0, _AnalyticsActions.runQueries)(this.props.client, this.props.title, this.props.queryType, queries, this.props.resultsModifier));
     }
@@ -181,7 +183,7 @@ var KeenChart = (function (_PureComponent) {
       if (this.props.interval) {
         options = Object.assign(options, this.getTimeSeriesOptions());
       }
-      return new _keenDataviz2.default().el(self.refs.theKeenChart).height(height).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
+      return new _keenDataviz2.default().el(self.refs.theKeenChart).colors(this.props.colors).height(height).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
     }
   }, {
     key: 'getQueries',
