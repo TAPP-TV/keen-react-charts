@@ -111,14 +111,12 @@ function runQueries(client, title, queryType, queries, resultsModifier) {
     var result = null;
     Promise.all(promises).then(function (res) {
       result = res;
-      console.log('store', title);
       return dispatch(storeOriginalResults(title, res));
     }).then(function () {
-      console.log('render', title);
       dispatch(renderResults(title, result, resultsModifier));
     }).catch(function (err) {
       console.error('Error in querying results:', err);
-      return err;
+      throw err;
     });
   };
 }

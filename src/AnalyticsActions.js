@@ -71,16 +71,14 @@ export function runQueries(client, title, queryType, queries, resultsModifier) {
     Promise.all(promises)
       .then(res => {
         result = res;
-        console.log('store', title);
         return dispatch(storeOriginalResults(title, res));
       })
       .then(() => {
-        console.log('render', title);
         dispatch(renderResults(title, result, resultsModifier));
       })
       .catch(err => {
         console.error('Error in querying results:', err);
-        return err;
+        throw err;
       });
   };
 }

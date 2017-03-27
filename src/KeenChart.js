@@ -16,19 +16,27 @@ class KeenChart extends PureComponent {
     this.renderGraph = this.renderGraph.bind(this);
   }
   componentDidMount() {
-    this.setState(
-      {
-        chart: this.getChart()
-      },
-      () => {
-        this.state.chart.prepare();
-        if (this.props.client) {
-          this.renderGraph();
+    //if using normal chart, set it up and send queries
+    if (!this.props.altRenderer) {
+      this.setState(
+        {
+          chart: this.getChart()
+        },
+        () => {
+          this.state.chart.prepare();
+          if (this.props.client) {
+            this.renderGraph();
+          }
         }
+      );
+    } else {
+      if (this.props.client) {
+        this.renderGraph();
       }
-    );
+    }
   }
   componentWillReceiveProps(newProps) {
+    //send queries if just got client, and haven't created chart yet
     if (!this.props.client && newProps.client && !this.state.chart) {
       this.renderGraph();
     }
@@ -42,9 +50,13 @@ class KeenChart extends PureComponent {
         this.props.title,
         newProps.results[this.props.title]
       );
-      this.state.chart.data(newProps.results[this.props.title]);
-      this.state.chart.view.stacked = true;
-      this.state.chart.render();
+      if (newProps.altRenderer) {
+        newProps.altRenderer(newProps.results[this.props.title]);
+      } else {
+        this.state.chart.data(newProps.results[this.props.title]);
+        this.state.chart.view.stacked = true;
+        this.state.chart.render();
+      }
     } else if (this.props.variables !== newProps.variables) {
       this.reRenderGraph();
       //console.log(this.props.variables, newProps.variables);
@@ -118,6 +130,11 @@ class KeenChart extends PureComponent {
       };
     }
     return {
+      grid: {
+        y: {
+          lines: [{value: 0, text: '0'}]
+        }
+      },
       axis: {
         x: {
           tick: {
@@ -218,6 +235,7 @@ KeenChart.propTypes = {
     React.PropTypes.object,
     React.PropTypes.array
   ]),
+  altRenderer: React.PropTypes.func,
   results: React.PropTypes.object.isRequired,
   resultsModifier: React.PropTypes.func,
   chartType: React.PropTypes.string.isRequired,

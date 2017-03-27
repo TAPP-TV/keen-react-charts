@@ -53,26 +53,38 @@ var KeenChart = (function (_PureComponent) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      this.setState({
-        chart: this.getChart()
-      }, function () {
-        _this2.state.chart.prepare();
-        if (_this2.props.client) {
-          _this2.renderGraph();
+      //if using normal chart, set it up and send queries
+      if (!this.props.altRenderer) {
+        this.setState({
+          chart: this.getChart()
+        }, function () {
+          _this2.state.chart.prepare();
+          if (_this2.props.client) {
+            _this2.renderGraph();
+          }
+        });
+      } else {
+        if (this.props.client) {
+          this.renderGraph();
         }
-      });
+      }
     }
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(newProps) {
+      //send queries if just got client, and haven't created chart yet
       if (!this.props.client && newProps.client && !this.state.chart) {
         this.renderGraph();
       }
       if (newProps.results[this.props.title] && this.props.results[this.props.title] !== newProps.results[this.props.title]) {
         console.log('RENDER ', this.props.title, newProps.results[this.props.title]);
-        this.state.chart.data(newProps.results[this.props.title]);
-        this.state.chart.view.stacked = true;
-        this.state.chart.render();
+        if (newProps.altRenderer) {
+          newProps.altRenderer(newProps.results[this.props.title]);
+        } else {
+          this.state.chart.data(newProps.results[this.props.title]);
+          this.state.chart.view.stacked = true;
+          this.state.chart.render();
+        }
       } else if (this.props.variables !== newProps.variables) {
         this.reRenderGraph();
         //console.log(this.props.variables, newProps.variables);
@@ -140,6 +152,11 @@ var KeenChart = (function (_PureComponent) {
         };
       }
       return {
+        grid: {
+          y: {
+            lines: [{ value: 0, text: '0' }]
+          }
+        },
         axis: {
           x: {
             tick: {
@@ -252,6 +269,7 @@ var KeenChart = (function (_PureComponent) {
 KeenChart.propTypes = {
   title: _react2.default.PropTypes.string.isRequired,
   query: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.object, _react2.default.PropTypes.array]),
+  altRenderer: _react2.default.PropTypes.func,
   results: _react2.default.PropTypes.object.isRequired,
   resultsModifier: _react2.default.PropTypes.func,
   chartType: _react2.default.PropTypes.string.isRequired,
