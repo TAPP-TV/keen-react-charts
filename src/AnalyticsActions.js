@@ -67,10 +67,16 @@ export function runQueries(client, title, queryType, queries, resultsModifier) {
     for (const query of queries) {
       promises.push(client.query(queryType, query));
     }
+    let result = null;
     Promise.all(promises)
       .then(res => {
-        dispatch(storeOriginalResults(title, res));
-        return dispatch(renderResults(title, res, resultsModifier));
+        result = res;
+        console.log('store', title);
+        return dispatch(storeOriginalResults(title, res));
+      })
+      .then(() => {
+        console.log('render', title);
+        dispatch(renderResults(title, result, resultsModifier));
       })
       .catch(err => {
         console.error('Error in querying results:', err);

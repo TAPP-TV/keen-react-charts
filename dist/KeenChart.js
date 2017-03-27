@@ -81,8 +81,20 @@ var KeenChart = (function (_PureComponent) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(oldProps) {
+      var _this3 = this;
+
       if (this.props.start !== oldProps.start || this.props.end !== oldProps.end || this.props.interval !== oldProps.interval) {
         this.renderGraph();
+      }
+      if (this.props.title !== oldProps.title) {
+        this.setState({
+          chart: this.getChart()
+        }, function () {
+          _this3.state.chart.prepare();
+          if (_this3.props.client) {
+            _this3.renderGraph();
+          }
+        });
       }
     }
   }, {

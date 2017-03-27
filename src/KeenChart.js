@@ -58,6 +58,19 @@ class KeenChart extends PureComponent {
     ) {
       this.renderGraph();
     }
+    if (this.props.title !== oldProps.title) {
+      this.setState(
+        {
+          chart: this.getChart()
+        },
+        () => {
+          this.state.chart.prepare();
+          if (this.props.client) {
+            this.renderGraph();
+          }
+        }
+      );
+    }
   }
 
   reRenderGraph() {
