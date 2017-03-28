@@ -54,7 +54,10 @@ class KeenChart extends PureComponent {
         newProps.altRenderer(newProps.results[this.props.title]);
       } else {
         this.state.chart.data(newProps.results[this.props.title]);
-        this.state.chart.view.stacked = true;
+        this.state.chart.view.stacked = typeof newProps.chartOptions.isStacked !==
+          'undefined'
+          ? newProps.chartOptions.isStacked
+          : true;
         this.state.chart.render();
       }
     } else if (this.props.variables !== newProps.variables) {
