@@ -14,8 +14,13 @@ class KeenChart extends PureComponent {
     this.getChart = this.getChart.bind(this);
     this.getTimeSeriesOptions = this.getTimeSeriesOptions.bind(this);
     this.renderGraph = this.renderGraph.bind(this);
+    this.setupChart = this.setupChart.bind(this);
   }
   componentDidMount() {
+    this.setupChart();
+  }
+
+  setupChart() {
     //if using normal chart, set it up and send queries
     if (!this.props.altRenderer) {
       this.setState(
@@ -35,6 +40,7 @@ class KeenChart extends PureComponent {
       }
     }
   }
+
   componentWillReceiveProps(newProps) {
     //send queries if just got client, and haven't created chart yet
     if (!this.props.client && newProps.client && !this.state.chart) {
@@ -50,6 +56,7 @@ class KeenChart extends PureComponent {
         this.props.title,
         newProps.results[this.props.title]
       );
+      if (this.props.onResults) this.props.onResults();
       if (newProps.altRenderer) {
         newProps.altRenderer(newProps.results[this.props.title]);
       } else {
@@ -74,17 +81,7 @@ class KeenChart extends PureComponent {
       this.renderGraph();
     }
     if (this.props.title !== oldProps.title) {
-      this.setState(
-        {
-          chart: this.getChart()
-        },
-        () => {
-          this.state.chart.prepare();
-          if (this.props.client) {
-            this.renderGraph();
-          }
-        }
-      );
+      this.setupChart();
     }
   }
 
@@ -96,6 +93,7 @@ class KeenChart extends PureComponent {
   }
 
   renderGraph() {
+    if (this.props.onQuery) this.props.onQuery();
     const queries = this.getQueries();
     this.props.dispatch(
       runQueries(
@@ -239,6 +237,7 @@ KeenChart.propTypes = {
     React.PropTypes.array
   ]),
   altRenderer: React.PropTypes.func,
+  onQuery: React.PropTypes.func,
   results: React.PropTypes.object.isRequired,
   resultsModifier: React.PropTypes.func,
   chartType: React.PropTypes.string.isRequired,

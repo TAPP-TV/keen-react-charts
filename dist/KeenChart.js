@@ -45,12 +45,18 @@ var KeenChart = (function (_PureComponent) {
     _this.getChart = _this.getChart.bind(_this);
     _this.getTimeSeriesOptions = _this.getTimeSeriesOptions.bind(_this);
     _this.renderGraph = _this.renderGraph.bind(_this);
+    _this.setupChart = _this.setupChart.bind(_this);
     return _this;
   }
 
   _createClass(KeenChart, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      this.setupChart();
+    }
+  }, {
+    key: 'setupChart',
+    value: function setupChart() {
       var _this2 = this;
 
       //if using normal chart, set it up and send queries
@@ -78,6 +84,7 @@ var KeenChart = (function (_PureComponent) {
       }
       if (newProps.results[this.props.title] && this.props.results[this.props.title] !== newProps.results[this.props.title]) {
         console.log('RENDER ', this.props.title, newProps.results[this.props.title]);
+        if (this.props.onResults) this.props.onResults();
         if (newProps.altRenderer) {
           newProps.altRenderer(newProps.results[this.props.title]);
         } else {
@@ -93,20 +100,11 @@ var KeenChart = (function (_PureComponent) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate(oldProps) {
-      var _this3 = this;
-
       if (this.props.start !== oldProps.start || this.props.end !== oldProps.end || this.props.interval !== oldProps.interval) {
         this.renderGraph();
       }
       if (this.props.title !== oldProps.title) {
-        this.setState({
-          chart: this.getChart()
-        }, function () {
-          _this3.state.chart.prepare();
-          if (_this3.props.client) {
-            _this3.renderGraph();
-          }
-        });
+        this.setupChart();
       }
     }
   }, {
@@ -118,6 +116,7 @@ var KeenChart = (function (_PureComponent) {
   }, {
     key: 'renderGraph',
     value: function renderGraph() {
+      if (this.props.onQuery) this.props.onQuery();
       var queries = this.getQueries();
       this.props.dispatch((0, _AnalyticsActions.runQueries)(this.props.client, this.props.title, this.props.queryType, queries, this.props.resultsModifier));
     }
@@ -270,6 +269,7 @@ KeenChart.propTypes = {
   title: _react2.default.PropTypes.string.isRequired,
   query: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.object, _react2.default.PropTypes.array]),
   altRenderer: _react2.default.PropTypes.func,
+  onQuery: _react2.default.PropTypes.func,
   results: _react2.default.PropTypes.object.isRequired,
   resultsModifier: _react2.default.PropTypes.func,
   chartType: _react2.default.PropTypes.string.isRequired,

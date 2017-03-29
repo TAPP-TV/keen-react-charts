@@ -59,14 +59,31 @@ function analyticsReducer(state = initialState, action) {
         end: action.end,
         lastUpdated: action.receivedAt
       };
-    case SET_START_AND_END:
+    case SET_START_AND_END: {
+      let interval = state.interval;
+      const durationInDays = moment(action.end).diff(
+        moment(action.start),
+        'days'
+      );
+      console.log('durationInDays', durationInDays);
+      if (durationInDays <= 1) {
+        interval = 'hourly';
+      } else if (durationInDays <= 31) {
+        interval = 'daily';
+      } else if (durationInDays <= 99) {
+        interval = 'weekly';
+      } else {
+        interval = 'monthly';
+      }
       return {
         ...state,
         daysAgo: moment(action.end).diff(moment(action.start), 'days'),
+        interval: interval,
         start: action.start,
         end: action.end,
         lastUpdated: action.receivedAt
       };
+    }
     case SET_KEEN_CONFIG:
       return {
         ...state,

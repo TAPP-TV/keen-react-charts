@@ -61,12 +61,27 @@ function analyticsReducer() {
         lastUpdated: action.receivedAt
       });
     case _AnalyticsActions.SET_START_AND_END:
-      return _extends({}, state, {
-        daysAgo: (0, _moment2.default)(action.end).diff((0, _moment2.default)(action.start), 'days'),
-        start: action.start,
-        end: action.end,
-        lastUpdated: action.receivedAt
-      });
+      {
+        var interval = state.interval;
+        var durationInDays = (0, _moment2.default)(action.end).diff((0, _moment2.default)(action.start), 'days');
+        console.log('durationInDays', durationInDays);
+        if (durationInDays <= 1) {
+          interval = 'hourly';
+        } else if (durationInDays <= 31) {
+          interval = 'daily';
+        } else if (durationInDays <= 99) {
+          interval = 'weekly';
+        } else {
+          interval = 'monthly';
+        }
+        return _extends({}, state, {
+          daysAgo: (0, _moment2.default)(action.end).diff((0, _moment2.default)(action.start), 'days'),
+          interval: interval,
+          start: action.start,
+          end: action.end,
+          lastUpdated: action.receivedAt
+        });
+      }
     case _AnalyticsActions.SET_KEEN_CONFIG:
       return _extends({}, state, {
         client: new _keenAnalysis2.default({
