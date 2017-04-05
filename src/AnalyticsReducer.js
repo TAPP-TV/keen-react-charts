@@ -10,7 +10,6 @@ import {
   SET_INTERVAL,
   SET_KEEN_CONFIG
 } from './AnalyticsActions.js';
-import Keen from 'keen-analysis';
 import moment from 'moment';
 
 const initialState = {
@@ -26,6 +25,11 @@ const initialState = {
   isLoaded: false,
   lastUpdated: moment().startOf('day').format()
 };
+
+const getStorageName = (title, start, end, interval) => {
+  return `${title}-${start}-${end},${interval}`;
+};
+
 /*REDUCERS*/
 function analyticsReducer(state = initialState, action) {
   switch (action.type) {
@@ -65,7 +69,6 @@ function analyticsReducer(state = initialState, action) {
         moment(action.start),
         'days'
       );
-      console.log('durationInDays', durationInDays);
       if (durationInDays <= 1) {
         interval = 'hourly';
       } else if (durationInDays <= 31) {

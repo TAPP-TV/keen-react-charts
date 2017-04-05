@@ -192,13 +192,15 @@ class KeenChart extends PureComponent {
     if (this.props.interval) {
       options = Object.assign(options, this.getTimeSeriesOptions());
     }
-    return new Dataviz()
+    const chart = new Dataviz()
       .el(self.refs.theKeenChart)
       .colors(this.props.colors)
       .height(height)
       .title(self.props.title)
       .type(self.props.chartType)
       .chartOptions(Object.assign(options, this.props.chartOptions));
+    if (this.props.colors) chart.colors(this.props.colors);
+    return chart;
   }
 
   getQueries() {

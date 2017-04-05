@@ -49,16 +49,6 @@ export function setInterval(interval) {
     receivedAt: moment().format()
   };
 }
-//used to stash a result for use by another query
-export function stashResult(key, timeframe, results) {
-  return {
-    type: STASH_RESULT,
-    key: key,
-    timeframe: timeframe,
-    results: results,
-    receivedAt: moment().format()
-  };
-}
 
 export function runQueries(client, title, queryType, queries, resultsModifier) {
   return dispatch => {

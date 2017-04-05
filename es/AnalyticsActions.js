@@ -9,7 +9,6 @@ exports.setKeenStart = setKeenStart;
 exports.setKeenEnd = setKeenEnd;
 exports.setKeenStartAndEnd = setKeenStartAndEnd;
 exports.setInterval = setInterval;
-exports.stashResult = stashResult;
 exports.runQueries = runQueries;
 exports.renderResults = renderResults;
 
@@ -65,16 +64,6 @@ function setInterval(interval) {
   return {
     type: SET_INTERVAL,
     interval: interval,
-    receivedAt: (0, _moment2.default)().format()
-  };
-}
-//used to stash a result for use by another query
-function stashResult(key, timeframe, results) {
-  return {
-    type: STASH_RESULT,
-    key: key,
-    timeframe: timeframe,
-    results: results,
     receivedAt: (0, _moment2.default)().format()
   };
 }
