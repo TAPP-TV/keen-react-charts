@@ -26,10 +26,6 @@ const initialState = {
   lastUpdated: moment().startOf('day').format()
 };
 
-const getStorageName = (title, start, end, interval) => {
-  return `${title}-${start}-${end},${interval}`;
-};
-
 /*REDUCERS*/
 function analyticsReducer(state = initialState, action) {
   switch (action.type) {

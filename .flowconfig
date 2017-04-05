@@ -1,0 +1,9 @@
+[ignore]
+.*/__tests__/.*
+.*/node_modules/fbjs/.*
+
+[include]
+
+[libs]
+
+[options]

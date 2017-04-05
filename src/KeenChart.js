@@ -2,6 +2,7 @@
 import React, {PureComponent} from 'react';
 import Dataviz from 'keen-dataviz';
 import moment from 'moment';
+import d3 from 'd3';
 import {runQueries, renderResults} from './AnalyticsActions';
 
 class KeenChart extends PureComponent {
@@ -16,8 +17,77 @@ class KeenChart extends PureComponent {
     this.renderGraph = this.renderGraph.bind(this);
     this.setupChart = this.setupChart.bind(this);
   }
+
+  state: {
+    chart: null | Object
+  };
+
   componentDidMount() {
     this.setupChart();
+  }
+
+  componentWillReceiveProps(
+    newProps: {
+      client: null | Object,
+      title: string,
+      results: Object,
+      altRenderer: null | Function,
+      chartOptions: {isStacked: null | boolean},
+      variables: null | Object
+    }
+  ) {
+    //send queries if just got client, and haven't created chart yet
+    if (!this.props.client && newProps.client && !this.state.chart) {
+      this.renderGraph();
+    }
+    if (
+      newProps.results[this.props.title] &&
+      this.props.results[this.props.title] !==
+        newProps.results[this.props.title]
+    ) {
+      console.log(
+        'RENDER ',
+        this.props.title,
+        newProps.results[this.props.title]
+      );
+      if (this.props.onResults) this.props.onResults();
+      if (newProps.altRenderer) {
+        newProps.altRenderer(newProps.results[this.props.title]);
+      } else if (this.state.chart) {
+        this.state.chart.data(newProps.results[this.props.title]);
+        const stacked = typeof newProps.chartOptions.isStacked !== 'undefined'
+          ? newProps.chartOptions.isStacked
+          : true;
+        const newChart = Object.assign({}, this.state.chart);
+        newChart.view.stacked = stacked;
+        this.setState({chart: newChart}, () => {
+          newChart.render();
+        });
+      }
+    } else if (this.props.variables !== newProps.variables) {
+      this.reRenderGraph();
+      //console.log(this.props.variables, newProps.variables);
+    }
+  }
+
+  componentDidUpdate(
+    oldProps: {
+      start: string,
+      end: string,
+      interval: string,
+      title: string
+    }
+  ) {
+    if (
+      this.props.start !== oldProps.start ||
+      this.props.end !== oldProps.end ||
+      this.props.interval !== oldProps.interval
+    ) {
+      this.renderGraph();
+    }
+    if (this.props.title !== oldProps.title) {
+      this.setupChart();
+    }
   }
 
   setupChart() {
@@ -41,50 +111,6 @@ class KeenChart extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(newProps) {
-    //send queries if just got client, and haven't created chart yet
-    if (!this.props.client && newProps.client && !this.state.chart) {
-      this.renderGraph();
-    }
-    if (
-      newProps.results[this.props.title] &&
-      this.props.results[this.props.title] !==
-        newProps.results[this.props.title]
-    ) {
-      console.log(
-        'RENDER ',
-        this.props.title,
-        newProps.results[this.props.title]
-      );
-      if (this.props.onResults) this.props.onResults();
-      if (newProps.altRenderer) {
-        newProps.altRenderer(newProps.results[this.props.title]);
-      } else {
-        this.state.chart.data(newProps.results[this.props.title]);
-        this.state.chart.view.stacked = typeof newProps.chartOptions.isStacked !==
-          'undefined'
-          ? newProps.chartOptions.isStacked
-          : true;
-        this.state.chart.render();
-      }
-    } else if (this.props.variables !== newProps.variables) {
-      this.reRenderGraph();
-      //console.log(this.props.variables, newProps.variables);
-    }
-  }
-  componentDidUpdate(oldProps) {
-    if (
-      this.props.start !== oldProps.start ||
-      this.props.end !== oldProps.end ||
-      this.props.interval !== oldProps.interval
-    ) {
-      this.renderGraph();
-    }
-    if (this.props.title !== oldProps.title) {
-      this.setupChart();
-    }
-  }
-
   reRenderGraph() {
     const results = this.props.originalResults[this.props.title];
     this.props.dispatch(
@@ -95,7 +121,7 @@ class KeenChart extends PureComponent {
   renderGraph() {
     if (this.props.onQuery) this.props.onQuery();
     const queries = this.getQueries();
-    this.props.dispatch(
+    return this.props.dispatch(
       runQueries(
         this.props.client,
         this.props.title,
@@ -106,7 +132,7 @@ class KeenChart extends PureComponent {
     );
   }
   //set values for timeseries display
-  getTimeSeriesOptions(isSparkline = false) {
+  getTimeSeriesOptions(isSparkline: boolean = false) {
     var format = '%b-%d-%y';
     var interval = this.props.interval;
     if (interval == 'hourly' || interval == 'every_15_minutes') {
@@ -143,11 +169,12 @@ class KeenChart extends PureComponent {
               max: 8 // the number of tick texts will be adjusted to less than this value
             },
             type: 'timeseries',
-            format: function(d) {
+            format: function(d: string) {
+              let date = d;
               if (interval == 'monthly') {
-                d = moment(d).add('days', 1).format();
+                date = moment(d).add('days', 1).format();
               }
-              return d3.time.format(format)(new Date(d));
+              return d3.time.format(format)(new Date(date));
             }
           }
         }
@@ -167,9 +194,11 @@ class KeenChart extends PureComponent {
           }
         }
       },
+      grid: {},
+      axis: {},
       gauge: {
         label: {
-          format: function(value, ratio) {
+          format: function(value) {
             return value;
           }
         }
@@ -179,12 +208,12 @@ class KeenChart extends PureComponent {
       },
       tooltip: {
         format: {
-          value: function(value, ratio) {
+          value: function(value) {
             return value;
           }
         }
       },
-      legend: 'bottom'
+      legend: {position: 'bottom'}
     };
     const height = this.props.chartOptions && this.props.chartOptions.height
       ? this.props.chartOptions.height
@@ -199,6 +228,8 @@ class KeenChart extends PureComponent {
       .title(self.props.title)
       .type(self.props.chartType)
       .chartOptions(Object.assign(options, this.props.chartOptions));
+    //unsure why we do this twice.
+    //I think its to set colors AFTER they've been set by chartOptions?
     if (this.props.colors) chart.colors(this.props.colors);
     return chart;
   }
@@ -240,10 +271,14 @@ KeenChart.propTypes = {
   ]),
   altRenderer: React.PropTypes.func,
   onQuery: React.PropTypes.func,
+  originalResults: React.PropTypes.object,
   results: React.PropTypes.object.isRequired,
   resultsModifier: React.PropTypes.func,
+  onResults: React.PropTypes.func,
   chartType: React.PropTypes.string.isRequired,
   queryType: React.PropTypes.string.isRequired,
+  variables: React.PropTypes.object,
+  colors: React.PropTypes.array,
   client: React.PropTypes.object,
   chartOptions: React.PropTypes.object,
   start: React.PropTypes.string.isRequired,
