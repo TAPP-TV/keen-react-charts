@@ -1,15 +1,15 @@
 import moment from 'moment';
 
-export const SET_KEEN_CONFIG = 'SET_KEEN_CONFIG';
-export const SET_START = 'SET_START';
-export const SET_END = 'SET_END';
-export const SET_START_AND_END = 'SET_START_AND_END';
-export const SET_DAYS_AGO = 'SET_DAYS_AGO';
-export const SET_INTERVAL = 'SET_INTERVAL';
-export const RECEIVE_RESULTS = 'RECEIVE_RESULTS';
-export const RUNNING_QUERY = 'RUNNING_QUERY';
-export const STASH_RESULT = 'STASH_RESULT';
-export const STORE_ORIGINAL_RESULTS = 'STORE_ORIGINAL_RESULTS';
+export const SET_KEEN_CONFIG = 'KEENCHART_SET_KEEN_CONFIG';
+export const SET_START = 'KEENCHART_SET_START';
+export const SET_END = 'KEENCHART_SET_END';
+export const SET_START_AND_END = 'KEENCHART_SET_START_AND_END';
+export const SET_DAYS_AGO = 'KEENCHART_SET_DAYS_AGO';
+export const SET_INTERVAL = 'KEENCHART_SET_INTERVAL';
+export const RECEIVE_RESULTS = 'KEENCHART_RECEIVE_RESULTS';
+export const RUNNING_QUERY = 'KEENCHART_RUNNING_QUERY';
+export const STASH_RESULT = 'KEENCHART_STASH_RESULT';
+export const STORE_ORIGINAL_RESULTS = 'KEENCHART_STORE_ORIGINAL_RESULTS';
 
 export function setKeenConfig(projectId, readKey) {
   return {
