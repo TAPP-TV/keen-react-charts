@@ -70,13 +70,13 @@ var KeenChart = function (_PureComponent) {
         if (this.props.onResults) this.props.onResults();
         if (newProps.altRenderer) {
           newProps.altRenderer(newProps.results[this.props.title]);
-        } else if (this.state.chart) {
+        } else if (this.state.chart !== null) {
           this.state.chart.data(newProps.results[this.props.title]);
           var stacked = typeof newProps.chartOptions.isStacked !== 'undefined' ? newProps.chartOptions.isStacked : true;
-          var newChart = Object.assign({}, this.state.chart);
-          newChart.view.stacked = stacked;
-          this.setState({ chart: newChart }, function () {
-            newChart.render();
+          this.state.chart.attributes({
+            view: {
+              stacked: stacked
+            }
           });
         }
       } else if (this.props.variables !== newProps.variables) {
