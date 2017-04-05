@@ -87,7 +87,8 @@ function analyticsReducer(state = initialState, action) {
         lastUpdated: action.receivedAt
       };
     }
-    case SET_KEEN_CONFIG:
+    case SET_KEEN_CONFIG: {
+      const Keen = require('keen-analysis');
       return {
         ...state,
         client: new Keen({
@@ -98,6 +99,7 @@ function analyticsReducer(state = initialState, action) {
         isLoaded: true,
         lastUpdated: action.receivedAt
       };
+    }
     case RUNNING_QUERY: {
       const newResults = Object.assign({}, state.results);
       newResults[action.title] = null;
