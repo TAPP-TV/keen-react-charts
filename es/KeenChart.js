@@ -20,10 +20,6 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _d = require('d3');
-
-var _d2 = _interopRequireDefault(_d);
-
 var _AnalyticsActions = require('./AnalyticsActions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -59,42 +55,6 @@ var KeenChart = function (_PureComponent) {
       this.setupChart();
     }
   }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(newProps) {
-      //send queries if just got client, and haven't created chart yet
-      if (!this.props.client && newProps.client && !this.state.chart) {
-        this.renderGraph();
-      }
-      if (newProps.results[this.props.title] && this.props.results[this.props.title] !== newProps.results[this.props.title]) {
-        console.log('RENDER ', this.props.title, newProps.results[this.props.title]);
-        if (this.props.onResults) this.props.onResults();
-        if (newProps.altRenderer) {
-          newProps.altRenderer(newProps.results[this.props.title]);
-        } else if (this.state.chart !== null) {
-          this.state.chart.data(newProps.results[this.props.title]);
-          var stacked = typeof newProps.chartOptions.isStacked !== 'undefined' ? newProps.chartOptions.isStacked : true;
-          this.state.chart.attributes({
-            view: {
-              stacked: stacked
-            }
-          });
-        }
-      } else if (this.props.variables !== newProps.variables) {
-        this.reRenderGraph();
-        //console.log(this.props.variables, newProps.variables);
-      }
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate(oldProps) {
-      if (this.props.start !== oldProps.start || this.props.end !== oldProps.end || this.props.interval !== oldProps.interval) {
-        this.renderGraph();
-      }
-      if (this.props.title !== oldProps.title) {
-        this.setupChart();
-      }
-    }
-  }, {
     key: 'setupChart',
     value: function setupChart() {
       var _this2 = this;
@@ -116,6 +76,44 @@ var KeenChart = function (_PureComponent) {
       }
     }
   }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(newProps) {
+      //send queries if just got client, and haven't created chart yet
+      if (!this.props.client && newProps.client && !this.state.chart) {
+        this.renderGraph();
+      }
+      if (newProps.results[this.props.title] && this.props.results[this.props.title] !== newProps.results[this.props.title]) {
+        console.log('RENDER ', this.props.title, newProps.results[this.props.title]);
+        if (this.props.onResults) this.props.onResults();
+        var _chart = this.state.chart;
+        if (newProps.altRenderer) {
+          newProps.altRenderer(newProps.results[this.props.title]);
+        } else if (_chart !== null) {
+          _chart.data(newProps.results[this.props.title]);
+          var stacked = typeof newProps.chartOptions.isStacked !== 'undefined' ? newProps.chartOptions.isStacked : true;
+          _chart.chartOptions(newProps.chartOptions);
+          _chart.attributes({
+            stacked: stacked
+          });
+          console.log('stacked', stacked, _chart.stacked, _chart.attributes());
+          _chart.render();
+        }
+      } else if (this.props.variables !== newProps.variables) {
+        this.reRenderGraph();
+        //console.log(this.props.variables, newProps.variables);
+      }
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(oldProps) {
+      if (this.props.start !== oldProps.start || this.props.end !== oldProps.end || this.props.interval !== oldProps.interval) {
+        this.renderGraph();
+      }
+      if (this.props.title !== oldProps.title) {
+        this.setupChart();
+      }
+    }
+  }, {
     key: 'reRenderGraph',
     value: function reRenderGraph() {
       var results = this.props.originalResults[this.props.title];
@@ -126,7 +124,7 @@ var KeenChart = function (_PureComponent) {
     value: function renderGraph() {
       if (this.props.onQuery) this.props.onQuery();
       var queries = this.getQueries();
-      return this.props.dispatch((0, _AnalyticsActions.runQueries)(this.props.client, this.props.title, this.props.queryType, queries, this.props.resultsModifier));
+      this.props.dispatch((0, _AnalyticsActions.runQueries)(this.props.client, this.props.title, this.props.queryType, queries, this.props.resultsModifier));
     }
     //set values for timeseries display
 
@@ -172,11 +170,10 @@ var KeenChart = function (_PureComponent) {
               },
               type: 'timeseries',
               format: function format(d) {
-                var date = d;
                 if (interval == 'monthly') {
-                  date = (0, _moment2.default)(d).add('days', 1).format();
+                  d = (0, _moment2.default)(d).add('days', 1).format();
                 }
-                return _d2.default.time.format(_format)(new Date(date));
+                return d3.time.format(_format)(new Date(d));
               }
             }
           }
@@ -197,11 +194,9 @@ var KeenChart = function (_PureComponent) {
             }
           }
         },
-        grid: {},
-        axis: {},
         gauge: {
           label: {
-            format: function format(value) {
+            format: function format(value, ratio) {
               return value;
             }
           }
@@ -211,20 +206,18 @@ var KeenChart = function (_PureComponent) {
         },
         tooltip: {
           format: {
-            value: function value(_value) {
+            value: function value(_value, ratio) {
               return _value;
             }
           }
         },
-        legend: { position: 'bottom' }
+        legend: 'bottom'
       };
       var height = this.props.chartOptions && this.props.chartOptions.height ? this.props.chartOptions.height : 400;
       if (this.props.interval) {
         options = Object.assign(options, this.getTimeSeriesOptions());
       }
       var chart = new _keenDataviz2.default().el(self.refs.theKeenChart).colors(this.props.colors).height(height).title(self.props.title).type(self.props.chartType).chartOptions(Object.assign(options, this.props.chartOptions));
-      //unsure why we do this twice.
-      //I think its to set colors AFTER they've been set by chartOptions?
       if (this.props.colors) chart.colors(this.props.colors);
       return chart;
     }
@@ -285,14 +278,10 @@ KeenChart.propTypes = {
   query: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.object, _react2.default.PropTypes.array]),
   altRenderer: _react2.default.PropTypes.func,
   onQuery: _react2.default.PropTypes.func,
-  originalResults: _react2.default.PropTypes.object,
   results: _react2.default.PropTypes.object.isRequired,
   resultsModifier: _react2.default.PropTypes.func,
-  onResults: _react2.default.PropTypes.func,
   chartType: _react2.default.PropTypes.string.isRequired,
   queryType: _react2.default.PropTypes.string.isRequired,
-  variables: _react2.default.PropTypes.object,
-  colors: _react2.default.PropTypes.array,
   client: _react2.default.PropTypes.object,
   chartOptions: _react2.default.PropTypes.object,
   start: _react2.default.PropTypes.string.isRequired,
