@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setIntervalrenderResults = exports.setKeenStartAndEnd = exports.setKeenEnd = exports.setKeenStart = exports.runQueries = exports.stashResult = exports.setKeenConfig = exports.keenChartReducer = exports.KeenChart = undefined;
+exports.setIntervalrenderResults = exports.setKeenStartAndEnd = exports.setKeenEnd = exports.setKeenStart = exports.runQueries = exports.setInterval = exports.stashResult = exports.setKeenConfig = exports.keenChartReducer = exports.KeenChart = undefined;
 
 var _KeenChart = require('./KeenChart');
 
@@ -19,6 +19,7 @@ exports.KeenChart = _KeenChart2.default;
 exports.keenChartReducer = _AnalyticsReducer.keenChartReducer;
 exports.setKeenConfig = _AnalyticsActions.setKeenConfig;
 exports.stashResult = _AnalyticsActions.stashResult;
+exports.setInterval = _AnalyticsActions.setInterval;
 exports.runQueries = _AnalyticsActions.runQueries;
 exports.setKeenStart = _AnalyticsActions.setKeenStart;
 exports.setKeenEnd = _AnalyticsActions.setKeenEnd;
